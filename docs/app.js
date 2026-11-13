@@ -4,7 +4,7 @@ const planImage = document.querySelector('#plan-image');
 const errorBox = document.querySelector('#model-error');
 const modeButtons = [...document.querySelectorAll('[data-mode]')];
 const roomButtons = [...document.querySelectorAll('[data-room]')];
-const modes = {cutaway: 'assets/cutaway.glb', full: 'assets/full.glb'};
+const modes = {cutaway: 'assets/cutaway.glb?v=closet-2', full: 'assets/full.glb?v=closet-2'};
 let mode = 'cutaway', modelMode = 'cutaway', loaded = false;
 let planScale = 1, panX = 0, panY = 0, toastTimer;
 const pointers = new Map();
