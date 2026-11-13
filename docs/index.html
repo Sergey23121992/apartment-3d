@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f2f2ed">
+  <title>Квартира — интерактивный 3D-макет</title>
+  <meta name="description" content="Посмотрите планировку квартиры в 3D: вращайте, приближайте и изучайте размерный план.">
+  <meta property="og:title" content="Квартира — 3D-макет">
+  <meta property="og:description" content="Откройте, покрутите и посмотрите размеры. Работает на телефоне и компьютере.">
+  <meta property="og:image" content="https://sergey23121992.github.io/apartment-3d/assets/preview.png">
+  <meta property="og:url" content="https://sergey23121992.github.io/apartment-3d/">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="vendor/model-viewer.min.js"></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="./" aria-label="К общему виду квартиры"><svg viewBox="0 0 28 28" aria-hidden="true"><path d="M4 4h20v20H4zM4 13h20M15 4v9M11 17v7M11 17h7v7"/></svg><span>ПЛАН<span class="brand-slash">/</span>01</span></a>
+    <div class="project-name">Квартира в объёме <span class="draft">Эскиз</span></div>
+    <button id="share" class="share" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 15l6-6M8 17l-1 1a4 4 0 01-6-6l4-4a4 4 0 016 0M16 7l1-1a4 4 0 016 6l-4 4a4 4 0 01-6 0" transform="translate(0 0) scale(.95)"/></svg><span>Скопировать ссылку</span></button>
+  </header>
+  <main class="workspace">
+    <aside class="sidebar">
+      <div class="eyebrow">Планировка квартиры</div>
+      <h1>Рассмотрите<br> каждый угол.</h1>
+      <p class="intro">Вращайте макет и приближайте детали. Все помещения — как на исходном эскизе.</p>
+      <div class="room-list" aria-label="Приблизить помещение">
+        <button data-room="hall"><span class="room-dot hall"></span><span>Зал</span><small>5,50 × 3,10 м</small><span class="arrow">↗</span></button>
+        <button data-room="bedroom"><span class="room-dot bedroom"></span><span>Спальня</span><small>4,34 × 2,28 м</small><span class="arrow">↗</span></button>
+        <button data-room="kitchen"><span class="room-dot kitchen"></span><span>Кухня</span><small>2,28 × 2,47 м</small><span class="arrow">↗</span></button>
+        <button data-room="bath"><span class="room-dot bath"></span><span>Санузел</span><small>1,85 × 1,69 м</small><span class="arrow">↗</span></button>
+        <button data-room="closet"><span class="room-dot closet"></span><span>Кладовая</span><small>1,07 × 2,28 м</small><span class="arrow">↗</span></button>
+      </div>
+      <div class="sidebar-note"><span class="note-mark">i</span><p>Это черновой макет. Чистые размеры рассчитаны по модели; часть размеров на исходном рисунке расходится.</p></div>
+      <a class="plan-link" href="assets/dimensions.png" target="_blank" rel="noopener">Открыть размерный план <span>↗</span></a>
+    </aside>
+    <section class="viewer-panel" aria-label="Интерактивная модель квартиры">
+      <div class="view-top">
+        <div class="segmented" role="group" aria-label="Вид макета">
+          <button class="active" data-mode="cutaway" aria-pressed="true">Разрез</button>
+          <button data-mode="full" aria-pressed="false">Полные стены</button>
+          <button data-mode="plan" aria-pressed="false">Размеры</button>
+        </div>
+        <span class="view-number" id="view-label">01 / ОБЩИЙ ВИД</span>
+      </div>
+      <model-viewer id="model" src="assets/cutaway.glb" poster="assets/preview.png" alt="3D-макет квартиры с залом, спальней, кухней, санузлом и кладовой" camera-controls touch-action="none" camera-orbit="30deg 50deg 105%" camera-target="auto auto auto" field-of-view="35deg" min-camera-orbit="auto 0deg 2m" max-camera-orbit="auto 88deg 35m" shadow-intensity="0.55" shadow-softness="1" exposure="1.05" environment-image="neutral" interaction-prompt="none" loading="eager" reveal="auto">
+        <div class="loading" slot="poster"><img src="assets/preview.png" alt=""><span id="load-text"><span class="spinner"></span>Загружаем 3D-макет</span></div>
+      </model-viewer>
+      <div id="plan-canvas" class="plan-canvas" hidden tabindex="0" aria-label="Размерный план: колесо мыши или кнопки для приближения, перетаскивание для перемещения">
+        <img id="plan-image" src="assets/dimensions.png" alt="Размерный план квартиры: все чистые размеры помещений, окон, дверей и простенков в миллиметрах" draggable="false">
+      </div>
+      <div id="model-error" class="model-error" hidden><p>Не удалось открыть 3D-модель.</p><button id="retry">Попробовать снова</button><a href="assets/dimensions.png">Посмотреть размерный план</a></div>
+      <div class="viewer-tools" role="group" aria-label="Управление просмотром">
+        <button id="zoom-in" aria-label="Приблизить" title="Приблизить">+</button>
+        <button id="zoom-out" aria-label="Отдалить" title="Отдалить">−</button>
+        <span class="tool-divider"></span>
+        <button id="top-view" aria-label="Вид сверху" title="Вид сверху"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14v14H5zM5 12h14M12 5v7"/></svg></button>
+        <button id="reset" aria-label="Общий вид" title="Вернуть общий вид"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10a8 8 0 111 9M4 4v6h6"/></svg></button>
+        <button id="fullscreen" aria-label="На весь экран" title="На весь экран"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4H4v5M15 4h5v5M4 15v5h5M20 15v5h-5"/></svg></button>
+      </div>
+      <div class="viewer-bottom"><p id="interaction-help"><span class="mouse-icon">↔</span><span class="desktop-help">Тяните, чтобы вращать · Колесо — масштаб · Shift + тяните — перемещение</span><span class="mobile-help">Один палец — вращать · Два — масштаб и перемещение</span></p><span class="scale-note" id="scale-note">Размеры в метрах</span></div>
+    </section>
+  </main>
+  <footer><span>По исходному эскизу · Версия 2</span><p>Окна: спальня 134 см · зал 216 см · кухня 137 см. Высота окон 140 см и подоконник 90 см приняты для макета.</p></footer>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
